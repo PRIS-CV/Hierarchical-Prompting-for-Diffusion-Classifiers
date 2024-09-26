@@ -1,5 +1,3 @@
-<div align="center">
-
 <!-- TITLE -->
 # **Hierarchical-Prompting-for-Diffusion-Classifiers**
 Code release for "Hierarchical-Prompting-for-Diffusion-Classifiers" (ACCV 2024)
