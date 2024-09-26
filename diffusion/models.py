@@ -1,6 +1,6 @@
 import torch
 from diffusers import AutoencoderKL, UNet2DConditionModel, DDPMScheduler, StableDiffusionPipeline, \
-    EulerDiscreteScheduler , StableDiffusion3Pipeline, FlowMatchEulerDiscreteScheduler
+    EulerDiscreteScheduler
 
 MODEL_IDS = {
     '1-1': "CompVis/stable-diffusion-v1-1",
@@ -9,8 +9,7 @@ MODEL_IDS = {
     '1-4': "CompVis/stable-diffusion-v1-4",
     '1-5': "runwayml/stable-diffusion-v1-5",
     '2-0': "stabilityai/stable-diffusion-2-base",
-    '2-1': "stabilityai/stable-diffusion-2-1-base",
-    '3': "stabilityai/stable-diffusion-3-medium-diffusers"
+    '2-1': "stabilityai/stable-diffusion-2-1-base"
 }
 
 
@@ -24,28 +23,14 @@ def get_sd_model(args):
 
     assert args.version in MODEL_IDS.keys()
     model_id = MODEL_IDS[args.version]
-    if model_id == "3":
-        scheduler = FlowMatchEulerDiscreteScheduler.from_pretrained(model_id, subfolder="scheduler")
-        pipe = StableDiffusion3Pipeline.from_pretrained(model_id, scheduler=scheduler, torch_dtype=dtype)
-        pipe.enable_xformers_memory_efficient_attention()
-        vae = pipe.vae
-        tokenizer = pipe.tokenizer
-        text_encoder = pipe.text_encoder
-        tokenizer_2 = pipe.tokenizer_2
-        text_encoder_2 = pipe.text_encoder_2
-        tokenizer_3 = pipe.tokenizer_3
-        text_encoder_3 = pipe.text_encoder_3
-        transformer = pipe.transformer    
-        return vae, tokenizer, text_encoder, tokenizer_2, text_encoder_2, tokenizer_3, text_encoder_3, transformer, scheduler
-    else:
-        scheduler = EulerDiscreteScheduler.from_pretrained(model_id, subfolder="scheduler")
-        pipe = StableDiffusionPipeline.from_pretrained(model_id, scheduler=scheduler, torch_dtype=dtype)
-        pipe.enable_xformers_memory_efficient_attention()
-        vae = pipe.vae
-        tokenizer = pipe.tokenizer
-        text_encoder = pipe.text_encoder
-        unet = pipe.unet
-        return vae, tokenizer, text_encoder, unet, scheduler
+    scheduler = EulerDiscreteScheduler.from_pretrained(model_id, subfolder="scheduler")
+    pipe = StableDiffusionPipeline.from_pretrained(model_id, scheduler=scheduler, torch_dtype=dtype)
+    pipe.enable_xformers_memory_efficient_attention()
+    vae = pipe.vae
+    tokenizer = pipe.tokenizer
+    text_encoder = pipe.text_encoder
+    unet = pipe.unet
+    return vae, tokenizer, text_encoder, unet, scheduler
 
 
 def get_scheduler_config(args):

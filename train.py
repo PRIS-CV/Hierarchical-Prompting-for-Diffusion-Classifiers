@@ -21,7 +21,7 @@ from datasets.utils import build_data_loader
 import clip
 from utils.air_get_tree_target_2 import *
 
-device = torch.device("cuda:0") if torch.cuda.is_available() else "cpu"
+device = torch.device("cuda:2") if torch.cuda.is_available() else "cpu"
 
 INTERPOLATIONS = {
     'bilinear': InterpolationMode.BILINEAR,
@@ -223,7 +223,7 @@ def main():
     unet = unet.to(device)
     
     for param in unet.parameters():
-        param.requires_grad = True
+        param.requires_grad = False
     for param in vae.parameters():
         param.requires_grad = False
     for param in text_encoder.parameters():
@@ -262,10 +262,6 @@ def main():
     # classnames = ['pickup truck','convertible','coupe','hatchback','minivan','sedan','SUV','van','wagon']
     prompt_learner = PromptLearner(classnames, clip_model)
 
-    # set up optimizer
-    optimizer = torch.optim.SGD(unet.parameters(), lr=1e-3)  
-    prompt_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, epoch * len(train_loader))
-
     formatstr = get_formatstr(len(train_loader) - 1)
     correct = 0
     total = 0
@@ -273,6 +269,11 @@ def main():
     total_samples = 0   
     epoch = 100
     pbar = tqdm.tqdm(train_loader)
+
+    # set up optimizer
+    optimizer = torch.optim.SGD(prompt_learner.parameters(), lr=1e-3)  
+    prompt_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, epoch * len(train_loader))
+
     for train_idx in range(epoch):
         train_loss = 0 
         idx = 0
