@@ -1,6 +1,6 @@
 <!-- TITLE -->
 # **Hierarchical-Prompting-for-Diffusion-Classifiers**
-Code release for "Hierarchical-Prompting-for-Diffusion-Classifiers" (ACCV 2024)
+Code release for "Hierarchical Prompting for Diffusion Classifiers" (ACCV 2024)
 
 ## Installation
 Create a conda environment with the following command:
